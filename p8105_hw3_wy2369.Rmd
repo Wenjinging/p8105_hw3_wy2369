@@ -1,0 +1,18 @@
+---
+title: "p8105_hw3_wy2369"
+output: github_document
+author: Wenjing Yang
+date: "2022-10-12"
+---
+
+# Problem 1
+
+### Load the data from `p8105.datasets`
+
+
+
+# Problem 2
+
+
+
+# Problem 3
