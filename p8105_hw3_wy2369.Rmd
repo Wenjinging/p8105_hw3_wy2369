@@ -34,7 +34,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-### Load the data 
+### Load the dataset 
 
 Using this code chunk to load data from `p8105.datasets`.
 
@@ -46,11 +46,15 @@ instacart =
   as_tibble(instacart)
 ```
 
-### Answer questions about the data
+### Write a short description of the dataset
 
-This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns, with each row resprenting a single product from an instacart order. Variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
+This dataset contains **`r nrow(instacart)`** rows and **`r ncol(instacart)`** columns, with each row resprenting a single product from an instacart order. 
 
-Below is a table summarizing the number of items ordered from aisle. In total, there are 134 aisles, with fresh vegetables and fresh fruits holding the most items ordered by far.
+Variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. 
+
+In total, there are **`r instacart %>% select(product_id) %>% distinct %>% count`** products found in **`r instacart %>% select(user_id, order_id) %>% distinct %>% count`** orders from **`r instacart %>% select(user_id) %>% distinct %>% count`** distinct users.
+
+Below is a table summarizing the number of items ordered from aisle. In total, there are **134** aisles, with fresh vegetables and fresh fruits holding the most items ordered by far.
 
 ```{r}
 instacart %>% 
@@ -58,7 +62,9 @@ instacart %>%
   arrange(desc(n))
 ```
 
-Next is a plot that shows the number of items ordered in each aisle. Here, aisles are ordered by ascending number of items.
+### Make a plot the number of items ordered in each aisle
+
+The plot shows the number of items ordered in each aisle, which n is more than 10000. Here, aisles are ordered by ascending number of items.
 
 ```{r}
 instacart %>% 
@@ -72,7 +78,10 @@ instacart %>%
 
 ```
 
-Our next table shows the three most popular items in aisles `baking ingredients`, `dog food care`, and `packaged vegetables fruits`, and includes the number of times each item is ordered in your table.
+
+### Make a table showing the three most popular items
+
+The three most popular items in aisles are **`baking ingredients`**,**`dog food care`**, and **`packaged vegetables fruits`**, and the table includes the number of times each item is ordered.
 
 ```{r}
 instacart %>% 
@@ -85,9 +94,12 @@ instacart %>%
   knitr::kable()
 ```
 
-Finally is a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. This table has been formatted in an untidy manner for human readers. Pink Lady Apples are generally purchased slightly earlier in the day than Coffee Ice Cream, with the exception of day 5.
+### Make a table showing the mean hour that Pink Lady Apples and Coffee Ice Cream are ordered.
 
-```{r}
+Finally is a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. This table has been formatted in an untidy manner for human readers. 
+Pink Lady Apples are generally purchased slightly earlier in the day than Coffee Ice Cream, with the exception of day 5.
+
+```{r message = FALSE}
 instacart %>%
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>%
   group_by(product_name, order_dow) %>%
