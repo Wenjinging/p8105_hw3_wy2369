@@ -147,16 +147,28 @@ Create a total activity variable for each day, and make a table showing these to
 accel_total_activity = 
   accel_df %>%
   group_by(week,day) %>%
-  summarize(total_activity = sum(activity_count))%>%
+  summarize(total_activity = sum(activity_count))
+
+accel_total_tidy =
+  accel_total_activity %>%
   pivot_wider(
     names_from = day,
-    values_from = total_activity) %>%
-    knitr::kable()
-accel_total_activity
+    values_from = total_activity)%>%
+  knitr::kable()
+
+accel_total_tidy
 ```
 
-To find out the trend of these data, I also make a plot of total activity counts for each day.
+To find out the trend of these data, I also make a plot using the code chunk below.
 
+```{r}
+accel_total_activity %>%
+  ggplot(aes(x= day, y = total_activity ,color= week)) +
+  geom_point()+
+  facet_grid(.~week)
+```
+
+From this plot, I think there is no obvious trend of total activity counts for each day. The highest total activity counts was collected on Monday of week 3, and the lowest was collected on Saturday of week 4 and week 5. 
 
 ### Make a single-panel plot that shows the 24-hour activity time courses for each day
 
