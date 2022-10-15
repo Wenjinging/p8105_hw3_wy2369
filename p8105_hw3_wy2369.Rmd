@@ -56,7 +56,7 @@ In total, there are **`r instacart %>% select(product_id) %>% distinct %>% count
 
 Below is a table summarizing the number of items ordered from aisle. In total, there are **134** aisles, with fresh vegetables and fresh fruits holding the most items ordered by far.
 
-```{r}
+```{r message = FALSE}
 instacart %>% 
   count(aisle) %>% 
   arrange(desc(n))
@@ -97,6 +97,7 @@ instacart %>%
 ### Make a table showing the mean hour that Pink Lady Apples and Coffee Ice Cream are ordered.
 
 Finally is a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. This table has been formatted in an untidy manner for human readers. 
+
 Pink Lady Apples are generally purchased slightly earlier in the day than Coffee Ice Cream, with the exception of day 5.
 
 ```{r message = FALSE}
@@ -114,27 +115,59 @@ instacart %>%
 
 ### Load, tidy, and wrangle the data
 
-The dataset includes all originally observed variables and values. It includes a weekday vs weekend variable and encodes data with reasonable variable classes. 
-
-Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
+The dataset includes all originally observed variables and values. It includes a weekday vs weekend variable (day_type) and encodes data with reasonable variable classes. 
 
 ```{r}
 accel_df = 
   read_csv("./data/accel_data.csv") %>%
-  janitor::clean_names()%>%
+  janitor::clean_names() %>%
   mutate(
-    day_type = if_else(day %in% c("Sunday","Saturday"),"weekend","weekday"))
-accel_df
+    day_type = if_else(day %in% c("Sunday","Saturday"),"weekend","weekday")) %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "minute_interval",
+    names_prefix = "activity_",
+    values_to = "activity_count")%>%
+    mutate(
+      day = fct_relevel(day,c("Friday","Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday"))) %>%
+  arrange(week,day)
+
+```
+
+This resulting dataset contains **`r nrow(accel_df)`** rows and **`r ncol(accel_df)`** columns. There are 6 important variables which are **week**, **day_id**, **day**, **day_type**, **minute_interval**, and **activity_count**. 
+
+From the dataset, I arrange the order of variable **day** to make sure people can easily find activity counts at certain day and certain time, which collected on a 63 year-old male with BMI 25.
+
+
+### Analyse the data and create a table
+
+Create a total activity variable for each day, and make a table showing these totals. 
+
+```{r message = FALSE}
+accel_total_activity = 
+  accel_df %>%
+  group_by(week,day) %>%
+  summarize(total_activity = sum(activity_count))%>%
+  pivot_wider(
+    names_from = day,
+    values_from = total_activity) %>%
+    knitr::kable()
+accel_total_activity
+```
+
+To find out the trend of these data, I also make a plot of total activity counts for each day.
+
+
+### Make a single-panel plot that shows the 24-hour activity time courses for each day
+
+and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
+
+```{r}
+
 ```
 
 
-
-### 
-
-Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
-
-
-Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
-
-
 # Problem 3
+
+### Load the data
+
