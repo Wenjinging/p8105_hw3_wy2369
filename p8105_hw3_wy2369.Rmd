@@ -94,7 +94,7 @@ instacart %>%
   knitr::kable()
 ```
 
-### Make a table showing the mean hour that Pink Lady Apples and Coffee Ice Cream are ordered.
+### Make a table showing the mean hour that Pink Lady Apples and Coffee Ice Cream are ordered
 
 Finally is a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. This table has been formatted in an untidy manner for human readers. 
 
@@ -129,7 +129,7 @@ accel_df =
     names_prefix = "activity_",
     values_to = "activity_count")%>%
     mutate(
-      day = fct_relevel(day,c("Friday","Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday"))) %>%
+      day = fct_relevel(day,c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"))) %>%
   arrange(week,day)
 
 ```
@@ -170,16 +170,52 @@ accel_total_activity %>%
 
 From this plot, I think there is no obvious trend of total activity counts for each day. The highest total activity counts was collected on Monday of week 3, and the lowest was collected on Saturday of week 4 and week 5. 
 
-### Make a single-panel plot that shows the 24-hour activity time courses for each day
+### Make a single-panel plot that shows the 24-hour activity
 
-and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
+Using this code chunk to make a plot which presents the 24-hour activity time courses for each day.
 
 ```{r}
-
+accel_df %>%
+  mutate(minute_interval = as.numeric(minute_interval))%>%
+  ggplot(aes(x = minute_interval,y = activity_count, color = day, group = week))+
+  geom_point()+
+  labs(
+    title = "24-hour activity count for each day",
+    x = "time",
+    y = "activity_count",
+    caption = "Data from accel_data.csv"
+  )+
+  geom_line()+
+    scale_x_continuous(
+    breaks = c(180,360,540,720,900,1080,1260,1440),
+    labels = c("3:00","6:00","9:00","12:00","15:00","18:00","21:00","24:00")
+  )
 ```
 
+Based on the resulting plot, the activity counts are always lower than 2500 from 22:00 to 5:00 for each day. However, activity counts increase at around 6:00, 9:00, 11:00, 16:00 and 20:00. From 20:00 to 22:00, most activity counts are higher than 5000 and the highest point is 8982. 
 
 # Problem 3
 
 ### Load the data
+
+Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
+
+```{r}
+data("ny_noaa")
+ny_noaa = 
+  instacart %>% 
+  as_tibble(ny_noaa)
+```
+
+### Make a two-panel plot showing the average max temperature in January and July
+
+ in each station across years. Is there any observable / interpretable structure? Any outliers?
+
+
+
+Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
+
+The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. Then, do or answer the following (commenting on the results of each):
+
 
