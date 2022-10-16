@@ -2,7 +2,6 @@
 title: "p8105_hw3_wy2369"
 output: github_document
 author: "Wenjing Yang"
-date: '`r format(Sys.time(), "%Y-%m-%d")`'
 ---
 
 # Problem 1
@@ -206,27 +205,43 @@ ny_noaa =
 
 ### Clean data and create separate variables
 
-Clean data first, and create separate variables for **year**, **month**, and **day**. Using the code chunk below to convert variables **prcp**, **snow**, **snwd**, **tmax** and **tmin** into numeric variables. Also convert the unit of tmax and tmin to Degree C. 
+Clean data first, and create separate variables for **year**, **month**, and **day**. Using the code chunk below to convert variables **prcp**, **snow**, **snwd**, **tmax** and **tmin** into numeric variables. 
 
 ```{r}
 ny_noaa_df = 
   ny_noaa %>%
   janitor::clean_names() %>%
+  separate(date, into = c("year","month","day") ) %>%
   mutate(
     prcp = as.numeric(prcp)/10,
     snow = as.numeric(snow),
     snwd = as.numeric(snwd),
     tmax = as.numeric(tmax)/10,
-    tmin = as.numeric(tmin)/10) %>%
-  separate(date, into = c("year","month","day") )
-ny_noaa_df
+    tmin = as.numeric(tmin)/10,
+    month = as.numeric(month)) 
 ```
 
-Now there are **`r nrow(ny_noaa_df)`** rows and **`r ncol(ny_noaa_df)`** columns in the `ny_noaa_df` dataset. Variables are **`r ncol(ny_noaa_df)`** which include id, year, month, day, prcp(mm), snow(mm), snwd(mm), tmax(degree C), and tmin(degree C).   
+Now there are **`r nrow(ny_noaa_df)`** rows and **`r ncol(ny_noaa_df)`** columns in the `ny_noaa_df` dataset. Variables are **`r ncol(ny_noaa_df)`** which include id, year, month, day, prcp(tenths of mm), snow(mm), snwd(mm), tmax(tenths of degree C), and tmin(tenths of degree C).   
 
-For snowfall, The most commonly observed values is
+### Find the most commonly observed value for snowfall
+
+```{r}
+ny_noaa_df %>%
+  group_by(snow)%>%
+  summarize(snow_obs = n())%>%
+  arrange(desc(snow_obs))
+```
+
+For snowfall, the most commonly observed value is **0** which means for most day it is not snowing in NYC.   
 
 ### Make a two-panel plot showing the average max temperature in January and July
+
+```{r}
+noaa_Jan_Jul =
+  ny_noaa_df %>%
+  filter(month =="1",month == "7")
+```
+
 
  in each station across years. Is there any observable / interpretable structure? Any outliers?
 
