@@ -213,15 +213,15 @@ ny_noaa_df =
   janitor::clean_names() %>%
   separate(date, into = c("year","month","day") ) %>%
   mutate(
+    year = as.numeric(year),
     prcp = as.numeric(prcp)/10,
     snow = as.numeric(snow),
     snwd = as.numeric(snwd),
     tmax = as.numeric(tmax)/10,
-    tmin = as.numeric(tmin)/10,
-    month = as.numeric(month)) 
+    tmin = as.numeric(tmin)/10) 
 ```
 
-Now there are **`r nrow(ny_noaa_df)`** rows and **`r ncol(ny_noaa_df)`** columns in the `ny_noaa_df` dataset. Variables are **`r ncol(ny_noaa_df)`** which include id, year, month, day, prcp(tenths of mm), snow(mm), snwd(mm), tmax(tenths of degree C), and tmin(tenths of degree C).   
+Now there are **`r nrow(ny_noaa_df)`** rows and **`r ncol(ny_noaa_df)`** columns in the `ny_noaa_df` dataset. Variables are **`r ncol(ny_noaa_df)`** which include id, year, month, day, prcp(tenths of mm), snow(mm), snwd(mm), tmax(tenths of degrees C), and tmin(tenths of degrees C).   
 
 ### Find the most commonly observed value for snowfall
 
@@ -236,20 +236,34 @@ For snowfall, the most commonly observed value is **0** which means for most day
 
 ### Make a two-panel plot showing the average max temperature in January and July
 
-```{r}
-noaa_Jan_Jul =
-  ny_noaa_df %>%
-  filter(month =="1",month == "7")
+```{r message = FALSE}
+ny_noaa_df%>%
+  filter(month %in% c("01", "07")) %>%
+  group_by(id, year, month) %>%
+  drop_na(tmax) %>%
+  summarize(mean_tmax = mean(tmax,na.rm = TRUE) ) %>%
+  ggplot(aes(x = year,y = mean_tmax, color = month)) +
+  geom_point()+
+  labs(
+    title = "The plot of average max temperature in January and July in each station across years",
+    x = "year",
+    y = "mean_tmax",
+    caption = "Data from p8105. datasets") +
+  facet_grid(.~month)
 ```
 
+From the two-panel plot, the average max temperature in January are much lower than the average max temperature in July. The range of mean tmax in January is about (-10 ~ 10), but there are some outlines which are lower than -15 or higher than 10. The range of mean tmax in July is about (20 ~35), and there are also some outlines lower than 20. 
 
- in each station across years. Is there any observable / interpretable structure? Any outliers?
+### Make a two-panel plot showing tmax vs tmin for the full dataset
+
+Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and
 
 
 
-Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
 
 
-The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. Then, do or answer the following (commenting on the results of each):
+(ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
+
 
 
