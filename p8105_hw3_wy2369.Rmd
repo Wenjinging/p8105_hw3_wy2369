@@ -129,7 +129,6 @@ accel_df =
     mutate(
       day = fct_relevel(day,c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"))) %>%
   arrange(week,day)
-
 ```
 
 This resulting dataset contains **`r nrow(accel_df)`** rows and **`r ncol(accel_df)`** columns. There are 6 important variables which are **week**, **day_id**, **day**, **day_type**, **minute_interval**, and **activity_count**. 
@@ -163,7 +162,10 @@ To find out the trend of these data, I also make a plot using the code chunk bel
 accel_total_activity %>%
   ggplot(aes(x= day, y = total_activity ,color= week)) +
   geom_point()+
-  facet_grid(.~week)
+  facet_grid(.~week) +
+  labs(
+    title = "The trend of total activity in five weeks")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 From this plot, I think there is no obvious trend of total activity counts for each day. The highest total activity counts was collected on Monday of week 3, and the lowest was collected on Saturday of week 4 and week 5. 
@@ -236,6 +238,8 @@ For snowfall, the most commonly observed value is **0** which means for most day
 
 ### Make a two-panel plot showing the average max temperature in January and July
 
+Using this code chunk to filter the maximum temperature in January and July, and then calculate the mean values using `summarize()`. After that, I set **year** as x axis and **mean_tmax** as y axis to make a two-panel plot.
+
 ```{r message = FALSE}
 ny_noaa_df%>%
   filter(month %in% c("01", "07")) %>%
@@ -286,4 +290,6 @@ plot_ii =
 
 plot_i+plot_ii
 ```
+
+I use `geom_hex()` code to plot that maximum temperature vs minimum temperature as `plot_i`, and use `geom_density_ridges()` code to show the distribution of snowfall values which are between 0mm to 100mm separately by year.
 
